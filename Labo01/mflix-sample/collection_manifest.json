@@ -1,0 +1,7 @@
+{"uid":"9","scopes":[
+    {"name":"_default","uid":"0","collections":[{"name":"_default","uid":"0","maxTTL":0},
+                                                {"name":"movies","uid":"1","maxTTL":0},
+                                                {"name":"users","uid":"2","maxTTL":0},
+                                                {"name":"theaters","uid":"3","maxTTL":0},
+                                                {"name":"comments","uid":"4","maxTTL":0}]}
+]}

@@ -1,0 +1,64 @@
+{
+  "statements": [
+    {
+      "statement": "CREATE PRIMARY INDEX def_primary on `@BUCKET_NAME@` USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE PRIMARY INDEX def_comments_primary ON `@BUCKET_NAME@`.`_default`.`comments` USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE INDEX def_comments_id ON `@BUCKET_NAME@`.`_default`.`comments`(`_id`) USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE PRIMARY INDEX def_movies_primary ON `@BUCKET_NAME@`.`_default`.`movies` USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE INDEX def_movies_id ON `@BUCKET_NAME@`.`_default`.`movies`(`_id`) USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE PRIMARY INDEX def_theaters_primary ON `@BUCKET_NAME@`.`_default`.`theaters` USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE INDEX def_theaters_id ON `@BUCKET_NAME@`.`_default`.`theaters`(`_id`) USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE PRIMARY INDEX def_users_primary ON `@BUCKET_NAME@`.`_default`.`users` USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE INDEX def_users_id ON `@BUCKET_NAME@`.`_default`.`users`(`_id`) USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "CREATE INDEX def_users_email ON `@BUCKET_NAME@`.`_default`.`users`(`email`) USING GSI WITH {\"defer_build\":true}",
+      "args": null
+    },
+    {
+      "statement": "BUILD INDEX ON `@BUCKET_NAME@`.`_default`.`comments`((SELECT RAW name FROM system:indexes WHERE keyspace_id = 'comments' AND state = 'deferred'))",
+      "args": null
+    },
+    {
+      "statement": "BUILD INDEX ON `@BUCKET_NAME@`((SELECT RAW name FROM system:indexes WHERE keyspace_id = '@BUCKET_NAME@' AND state = 'deferred'))",
+      "args": null
+    },
+    {
+      "statement": "BUILD INDEX ON `@BUCKET_NAME@`.`_default`.`movies`((SELECT RAW name FROM system:indexes WHERE keyspace_id = 'movies' AND state = 'deferred'))",
+      "args": null
+    },
+    {
+      "statement": "BUILD INDEX ON `@BUCKET_NAME@`.`_default`.`theaters`((SELECT RAW name FROM system:indexes WHERE keyspace_id = 'theaters' AND state = 'deferred'))",
+      "args": null
+    },
+    {
+      "statement": "BUILD INDEX ON `@BUCKET_NAME@`.`_default`.`users`((SELECT RAW name FROM system:indexes WHERE keyspace_id = 'users' AND state = 'deferred'))",
+      "args": null
+    }
+  ]
+}
