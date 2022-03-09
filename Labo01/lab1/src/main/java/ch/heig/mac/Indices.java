@@ -17,11 +17,9 @@ public class Indices {
             Map.entry("commentsOfDirector1", List.of("CREATE INDEX adv_id_title ON `default`:`mflix-sample`.`_default`.`movies`(`_id`,`title`)",
                     " CREATE INDEX adv_movie_id_text ON `default`:`mflix-sample`.`_default`.`comments`(`movie_id`,`text`)"))
 
+        /*    Map.entry("commentsOfDirector2", List.of("CREATE INDEX adv_id_title ON `default`:`mflix-sample`.`_default`.`movies`(`_id`,`title`)",
+                    " CREATE INDEX adv_movie_id_text ON `default`:`mflix-sample`.`_default`.`comments`(`movie_id`,`text`)"))*/
     );
-
- //   CREATE INDEX adv_id_title ON `default`:`mflix-sample`.`_default`.`movies`(`_id`,`title`)
-
-  //  CREATE INDEX adv_movie_id_text ON `default`:`mflix-sample`.`_default`.`comments`(`movie_id`,`text`)
 
     public Indices(Cluster cluster) {
         this.cluster = cluster;

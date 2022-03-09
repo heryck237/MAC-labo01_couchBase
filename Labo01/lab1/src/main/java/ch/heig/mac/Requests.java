@@ -65,15 +65,22 @@ public class Requests {
 
         QueryResult result = cluster.query(
         "SELECT M.title, C.text \n" +
-        "FROM `mflix-sample`._default.movies M" +
+        "FROM `mflix-sample`._default.movies M\n" +
         "INNER JOIN `mflix-sample`._default.comments C\n" +
         "ON M._id = C.movie_id\n" +
-                "WHERE " + director + "WITHIN M.directors");
+                "WHERE " + director + " WITHIN M.directors");
         return result.rowsAs(JsonObject.class);
     }
 
     public List<JsonObject> commentsOfDirector2(String director) {
-        throw new UnsupportedOperationException("Not implemented, yet");
+        QueryResult result = cluster.query(
+                "SELECT M.title, C.text \n" +
+                        "FROM `mflix-sample`._default.movies M\n" +
+                        "INNER JOIN `mflix-sample`._default.comments C\n" +
+                        "ON M._id = C.movie_id AND " + director + "WITHIN M.directors");
+
+        return result.rowsAs(JsonObject.class);
+
     }
 
     // Returns the number of documents updated.
@@ -82,7 +89,15 @@ public class Requests {
     }
 
     public List<JsonObject> nightMovies() {
-        throw new UnsupportedOperationException("Not implemented, yet");
+        QueryResult result = cluster.query(
+                "SELECT DISTINCT M._id, M.title\n" +
+                         "FROM `mflix-sample`._default.movies M \n" +
+                         "WHERE M._id NOT IN (" +
+                        "SELECT DISTINCT T.movieId\n" +
+                        "FROM `mflix-sample`._default.theaters T\n" +
+                        "WHERE T.hourBegin < '18:00:00'");
+        return result.rowsAs(JsonObject.class);
+
     }
 
 
