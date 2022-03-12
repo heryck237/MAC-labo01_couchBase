@@ -14,11 +14,12 @@ public class Indices {
     protected Map<String, List<String>> requiredIndices = Map.ofEntries(
             // TODO: For each query, if needed, add the index creation requests
             // Map.entry(<method name>, List.of("CREATE INDEX ...", "CREATE INDEX ..."))
-            Map.entry("commentsOfDirector1", List.of("CREATE INDEX adv_id_title ON `default`:`mflix-sample`.`_default`.`movies`(`_id`,`title`)",
+            Map.entry("commentsOfDirector2", List.of("CREATE INDEX adv_id_title ON `default`:`mflix-sample`.`_default`.`movies`(`_id`,`title`)",
                     " CREATE INDEX adv_movie_id_text ON `default`:`mflix-sample`.`_default`.`comments`(`movie_id`,`text`)"))
 
-        /*    Map.entry("commentsOfDirector2", List.of("CREATE INDEX adv_id_title ON `default`:`mflix-sample`.`_default`.`movies`(`_id`,`title`)",
-                    " CREATE INDEX adv_movie_id_text ON `default`:`mflix-sample`.`_default`.`comments`(`movie_id`,`text`)"))*/
+            Map.entry("commentsOfDirector2", List.of("CREATE INDEX adv_id_title ON `default`:`mflix-sample`.`_default`.`movies`(`_id`,`title`)",
+                    " CREATE INDEX adv_movie_id_text ON `default`:`mflix-sample`.`_default`.`comments`(`movie_id`,`text`)"))
+            Map.entry("nightMovies",List.of("CREATE INDEX adv_movie_id ON `default`:`mflix-sample`.`_default`.`theaters`(`movie_id`) "))
     );
 
     public Indices(Cluster cluster) {

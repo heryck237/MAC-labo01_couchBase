@@ -67,4 +67,11 @@ WHERE M._id NOT IN (
 	FROM `mflix-sample`._default.theaters T
 	WHERE T.hourBegin < '18:00:00'
 );
+
+SELECT M.title
+FROM `mflix-sample`._default.movies M
+WHERE M._id NOT IN(SELECT sched.movieId
+FROM `mflix-sample`._default.theaters T
+UNNEST schedule sched
+WHERE sched.hourBegin < '18:00:00');
  
