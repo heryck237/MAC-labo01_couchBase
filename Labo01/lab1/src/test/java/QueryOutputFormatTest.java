@@ -134,9 +134,8 @@ public class QueryOutputFormatTest {
     @Test
     public void testNightMoviesQuery() {
         indices.createRequiredIndicesOf("removeEarlyProjection");
-
         // ensure at least one movie is only projected late
-        requests.removeEarlyProjection("573a13edf29313caabdd49ad");
+       // requests.removeEarlyProjection("573a13edf29313caabdd49ad");
 
         JsonObject row = requests.nightMovies().get(0);
         assertThat(row.getNames())

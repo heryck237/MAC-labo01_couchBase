@@ -23,7 +23,12 @@ public class Requests {
     }
 
     public List<JsonObject> inconsistentRating() {
-        throw new UnsupportedOperationException("Not implemented, yet");
+        QueryResult result = cluster.query(
+        "SELECT M.imdb.id AS imdb_id, M.tomatoes.viewer.rating AS tomatoes_rating, M.imdb.rating AS imdb_rating\n" +
+        "FROM `mflix-sample`._default.movies M\n" +
+        "WHERE M.tomatoes.viewer.rating <> 0 AND (M.imdb.rating - M.tomatoes.viewer.rating) > 7;"
+        );
+        return result.rowsAs(JsonObject.class);
     }
 
     public List<JsonObject> hiddenGem() {
@@ -31,12 +36,19 @@ public class Requests {
         "SELECT M.title\n" +
         "FROM `mflix-sample`._default.movies M\n" +
         "WHERE M.tomatoes.critic.rating = 10 AND M.tomatoes.viewer.rating IS MISSING;"
-    );
+        );
         return result.rowsAs(JsonObject.class);
     }
 
     public List<JsonObject> topReviewers() {
-        throw new UnsupportedOperationException("Not implemented, yet");
+        QueryResult result = cluster.query(
+        "SELECT DISTINCT C.name, COUNT(*) AS cnt\n" +
+        "FROM `mflix-sample`._default.comments C\n" +
+        "GROUP BY C.name\n" +
+        "ORDER BY COUNT(*) DESC\n" +
+        "LIMIT 10;"
+        );
+        return result.rowsAs(JsonObject.class);
     }
 
     public List<String> greatReviewers() {
@@ -50,34 +62,54 @@ public class Requests {
     }
 
     public List<JsonObject> bestMoviesOfActor(String actor) {
-        throw new UnsupportedOperationException("Not implemented, yet");
+        QueryResult result = cluster.query(
+        "SELECT M.imdb.id AS imdb_id, M.imdb.rating, M.`cast`\n" +
+        "FROM `mflix-sample`._default.movies M\n" +
+        "WHERE M.imdb.rating > 8\n" +
+        "AND \"" + actor + "\" WITHIN M.`cast`;"
+        );
+        return result.rowsAs(JsonObject.class);
     }
 
     public List<JsonObject> plentifulDirectors() {
-        throw new UnsupportedOperationException("Not implemented, yet");
+        QueryResult result = cluster.query(
+                "with all_director AS (select distinct directors as name, count(*) nb_film\n" +
+               " FROM `mflix-sample`._default.movies\n" +
+       "UNNEST directors\n" +
+        "GROUP BY directors)\n" +
+
+        "SELECT all_director.name director_name, all_director.nb_film count_film\n" +
+        "from all_director\n" +
+       "WHERE all_director.nb_film > 30;"
+        );
+        return result.rowsAs(JsonObject.class);
     }
 
     public List<JsonObject> confusingMovies() {
-        throw new UnsupportedOperationException("Not implemented, yet");
+        QueryResult result = cluster.query(
+        "SELECT M._id AS movie_id, M.title\n" +
+        "FROM `mflix-sample`._default.movies M\n" +
+        "WHERE ARRAY_LENGTH(M.directors) > 20;"
+        );
+        return result.rowsAs(JsonObject.class);
     }
 
     public List<JsonObject> commentsOfDirector1(String director) {
-
         QueryResult result = cluster.query(
-        "SELECT C.movie_id, C.text \n" +
+        "SELECT M._id AS movie_id, C.text \n" +
         "FROM `mflix-sample`._default.movies M\n" +
         "INNER JOIN `mflix-sample`._default.comments C\n" +
         "ON M._id = C.movie_id\n" +
-                "WHERE '" + director + "' WITHIN M.directors");
+                "WHERE \"" + director + "\" WITHIN M.directors");
         return result.rowsAs(JsonObject.class);
     }
 
     public List<JsonObject> commentsOfDirector2(String director) {
         QueryResult result = cluster.query(
-                "SELECT C.movie_id, C.text \n" +
+                "SELECT M._id AS movie_id, C.text \n" +
                         "FROM `mflix-sample`._default.movies M\n" +
                         "INNER JOIN `mflix-sample`._default.comments C\n" +
-                        "ON M._id = C.movie_id AND '" + director + "' WITHIN M.directors");
+                        "ON M._id = C.movie_id AND \"" + director + "\" WITHIN M.directors");
 
         return result.rowsAs(JsonObject.class);
 
@@ -90,14 +122,15 @@ public class Requests {
 
     public List<JsonObject> nightMovies() {
         QueryResult result = cluster.query(
-                "SELECT DISTINCT T.movie_id, M.title\n" +
-                         "FROM `mflix-sample`._default.movies M \n" +
-                        "INNER JOIN `mflix-sample`._default.theaters T\n" +
-                         "ON T.movie_id = M._id\n" +
-                         "WHERE T.movie_id NOT IN (" +
-                        "SELECT DISTINCT Th.movieId\n" +
-                        "FROM `mflix-sample`._default.theaters Th\n" +
-                        "WHERE T.hourBegin < '18:00:00'");
+                "with early_projection AS (select distinct sched.movieId id, sched.hourBegin hour\n" +
+                        "FROM `mflix-sample`._default.theaters\n" +
+                "UNNEST schedule as sched\n" +
+                "WHERE sched.hourBegin < '18:00:00')\n" +
+
+       "SELECT M._id movie_id, M.title \n" +
+        "from `mflix-sample`._default.movies M\n"+
+        "Where M._id NOT IN (select early_projection.id);"
+        );
         return result.rowsAs(JsonObject.class);
 
     }

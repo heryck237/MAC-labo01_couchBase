@@ -39,11 +39,14 @@ name nb_comments
 
 ## 6 Le nom et le nombre de films des directeurs ( director_name , count_film ) ayant dirigé plus que 30 films.
 
-SELECT M.directors director_name , COUNT(*) count_film
-FROM `mflix-sample`.\_default.movies M
-WHERE M.directors IS NOT MISSING /*Because there was an entries with a count of 235 without the names of directors*/
-GROUP BY M.directors
-HAVING COUNT(*) > 30;
+with all_director AS (select distinct directors as name, count(*) nb_film
+FROM `mflix-sample`._default.movies
+UNNEST directors
+GROUP BY directors)
+
+SELECT all_director.name director_name, all_director.nb_film count_film
+from all_director
+WHERE all_director.nb_film > 30;
 
 ## 8 2manières différentes pour retourner le text (doit être de type string et non pas de type array) de tous les commentaires sur tous les films ( movie_id ) dirigés par un directeur donné (par exemple "Woody Allen").
 - première
@@ -68,10 +71,11 @@ WHERE M._id NOT IN (
 	WHERE T.hourBegin < '18:00:00'
 );
 
-SELECT M.title
-FROM `mflix-sample`._default.movies M
-WHERE M._id NOT IN(SELECT sched.movieId
-FROM `mflix-sample`._default.theaters T
-UNNEST schedule sched
-WHERE sched.hourBegin < '18:00:00');
- 
+with early_projection AS (select distinct sched.movieId movies_id, sched.hourBegin hour
+FROM `mflix-sample`._default.theaters
+UNNEST schedule as sched
+WHERE sched.hourBegin < '18:00:00')
+
+SELECT M._id, M.title
+from `mflix-sample`._default.movies M
+Where M._id NOT IN (select early_projection.movies_id);
