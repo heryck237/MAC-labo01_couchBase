@@ -39,25 +39,25 @@ name nb_comments
 
 ## 6 Le nom et le nombre de films des directeurs ( director_name , count_film ) ayant dirigé plus que 30 films.
 
-with all_director AS (select distinct directors as name, count(*) nb_film
+with all_director AS (SELECT DISTINCT directors as name, count(*) nb_film
 FROM `mflix-sample`._default.movies
 UNNEST directors
 GROUP BY directors)
 
 SELECT all_director.name director_name, all_director.nb_film count_film
-from all_director
+FROM all_director
 WHERE all_director.nb_film > 30;
 
 ## 8 2manières différentes pour retourner le text (doit être de type string et non pas de type array) de tous les commentaires sur tous les films ( movie_id ) dirigés par un directeur donné (par exemple "Woody Allen").
 - première
-   SELECT M.title, C.text
-   FROM `mflix-sample`._default.movies M
-   INNER JOIN `mflix-sample`._default.comments C
-   ON M._id = C.movie_id
-   WHERE   director  WITHIN M.directors
+  SELECT M._id AS movie_id, C.text
+  FROM `mflix-sample`._default.movies M
+  INNER JOIN `mflix-sample`._default.comments C
+  ON M._id = C.movie_id
+  WHERE "Woody Allen" WITHIN M.directors;
 
 - deuxieme
-  SELECT M.title, C.text
+  SELECT M._id movies_id, C.text
   FROM `mflix-sample`._default.movies M
   INNER JOIN `mflix-sample`._default.comments C
   ON M._id = C.movie_id AND "Woody Allen" WITHIN M.directors;
